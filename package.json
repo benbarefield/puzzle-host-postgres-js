@@ -1,20 +1,8 @@
 {
     "name": "puzzle-host-db-js-postgres",
     "version": "1.0.0",
-    "watch": {
-        "build": {
-            "patterns": [
-                "src"
-            ],
-            "extensions": "js,ts"
-        }
-    },
     "scripts": {
-        "prestart": "npm run build",
-        "start": "concurrently --killOthers \"npm run watch\" \"npm run serve\"",
         "build": "npx tsc",
-        "watch": "npm-watch",
-        "serve": "nodemon ./dist/index.js",
         "test": "jest --watch"
     },
     "jest": {
@@ -28,16 +16,14 @@
         ],
         "moduleDirectories": [
             "node_modules"
-        ],
-        "setupFiles": [
-            "./test/env.js"
         ]
     },
     "dependencies": {
         "@types/pg": "^8.11.10",
-        "pg": "^8.13.0"
+        "pg": "^8.13.0",
+        "@testcontainers/postgresql": "^10.13.1"
     },
     "devDependencies": {
-        "@testcontainers/postgresql": "^10.13.1"
+
     }
 }

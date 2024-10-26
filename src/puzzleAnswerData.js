@@ -1,12 +1,14 @@
 async function createPuzzleAnswer(pg, puzzle, value, answerIndex) {
+  if(isNaN(+puzzle)) { return null; }
+
   const client = await pg.connect();
 
   let newId = -1;
   try {
     await client.query("BEGIN");
     await client.query('UPDATE puzzle_answers SET answer_index = answer_index + 1 WHERE answer_index >= $1', [answerIndex]);
-    const result = await client.query('INSERT INTO puzzle_answers (puzzle, value, answer_index) VALUES ($1, $2, $3) RETURNING id', [puzzle, value, answerIndex]);
-    newId = result.rows[0].id
+    const result = await client.query('INSERT INTO puzzle_answers (puzzle, value, answer_index) VALUES ($1, $2, $3) RETURNING id', [+puzzle, value, answerIndex]);
+    newId = result.rows[0].id.toString();
     await client.query("COMMIT");
   }
   catch(e) {
@@ -21,7 +23,9 @@ async function createPuzzleAnswer(pg, puzzle, value, answerIndex) {
 }
 
 async function getPuzzleAnswerById(pg, id) {
-  const result = await pg.query('SELECT value, puzzle, answer_index from puzzle_answers WHERE id = $1', [id]);
+  if(isNaN(+id)) { return null; }
+
+  const result = await pg.query('SELECT value, puzzle, answer_index from puzzle_answers WHERE id = $1', [+id]);
 
   if(!result.rows.length) { return null; }
 
@@ -43,7 +47,7 @@ async function removePuzzleAnswer(pg, id) {
   try {
     await client.query("BEGIN");
     await client.query('UPDATE puzzle_answers SET answer_index = answer_index - 1 WHERE answer_index > $1', [currentRecord.answerIndex]);
-    await pg.query("DELETE from puzzle_answers WHERE id = $1", [id]);
+    await pg.query("DELETE from puzzle_answers WHERE id = $1", [+id]);
     await client.query("COMMIT");
   }
   catch(e) {
@@ -58,6 +62,8 @@ async function removePuzzleAnswer(pg, id) {
 }
 
 async function updatePuzzleAnswer(pg, id, value, answerIndex) {
+  if(isNaN(+id)) { return false; }
+
   let updateString = "";
   let updates = [];
   if(value !== undefined) {
@@ -110,7 +116,9 @@ async function updatePuzzleAnswer(pg, id, value, answerIndex) {
 }
 
 async function getAnswersForPuzzle(pg, puzzleId) {
-  const result = await pg.query('SELECT id, value, answer_index from puzzle_answers WHERE puzzle=$1', [puzzleId]);
+  if(isNaN(+puzzleId)) { return []; }
+
+  const result = await pg.query('SELECT id, value, answer_index from puzzle_answers WHERE puzzle=$1', [+puzzleId]);
 
   return result.rows.map(r => ({
     id: r.id,
@@ -119,6 +127,8 @@ async function getAnswersForPuzzle(pg, puzzleId) {
     puzzle: puzzleId
   }));
 }
+
+// todo: add "check puzzle answer"?
 
 exports.createPuzzleAnswer = createPuzzleAnswer;
 exports.getPuzzleAnswerById = getPuzzleAnswerById;

@@ -1,7 +1,7 @@
 const {Pool} = require('pg');
 
 async function sessionStarter(connectionString = null) {
-  connectionString = connectionString || process.env.PG_CONNECTION;
+  connectionString = connectionString || process.env.DB_CONNECTION;
   const pgClient = new Pool({ connectionString });
 
   // test the connection
