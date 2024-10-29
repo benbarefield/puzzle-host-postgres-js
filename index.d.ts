@@ -6,6 +6,8 @@ export interface Puzzle {
   id: string
   name: string
   owner: string
+  lastGuessDate?: Date
+  lastGuessResult?: boolean
 }
 
 export declare function getPuzzleById(pg : Pool, id: string) : Promise<Puzzle | null>
@@ -14,6 +16,7 @@ export declare function getPuzzlesForUser(pg: Pool, userId: string): Promise<Puz
 export declare function verifyPuzzleOwnership(pg: Pool, puzzleId: string, userId: string): Promise<boolean | null>
 export declare function markPuzzleAsDeleted(pg: Pool, puzzleId: string): Promise<boolean>
 export declare function updatePuzzle(pg: Pool, puzzleId: string, name: string): Promise<boolean>
+export declare function checkPuzzleGuess(pg: Pool, puzzleId: string, guess: string[]): Promise<boolean | null>
 
 export interface PuzzleAnswer {
   id: string

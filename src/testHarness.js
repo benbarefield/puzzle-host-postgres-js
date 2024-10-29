@@ -7,6 +7,8 @@ const puzzleTable = `CREATE TABLE IF NOT EXISTS public.puzzles
     name text COLLATE pg_catalog."default",
     owner text COLLATE pg_catalog."default" NOT NULL,
     deleted boolean DEFAULT false,
+    last_guess_date bigint,
+    last_guess_result boolean,
     CONSTRAINT puzzles_pkey PRIMARY KEY (id)
 )`;
 
